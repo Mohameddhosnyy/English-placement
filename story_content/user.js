@@ -132,51 +132,52 @@ if (!window.quizTimer) {
 
 window.Script4 = function()
 {
-  // === 1) Get variables from Storyline ===
-var player = GetPlayer();
-var learnerName  = player.GetVar("LearnerName");
-var learnerEmail = player.GetVar("LearnerEmail");
-var quizScore    = player.GetVar("QuizScore");    // your % score variable
-var level        = player.GetVar("Level");        // Beginner / Intermediate / Advanced
+  try {
+    var player = GetPlayer();
+    var learnerName  = player.GetVar("LearnerName");
+    var learnerEmail = player.GetVar("LearnerEmail");
+    var quizScore    = player.GetVar("QuizScore");    // % score
+    var level        = player.GetVar("Level");        // Beginner / Intermediate / Advanced
 
-// === 2) Google Form POST URL ===
-var formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSc_nfEpH9CLhMIcz06omILQy-kQPxV9u0Rc8RW4i5GEdT8wSg/formResponse";
+    var formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSc_nfEpH9CLhMIcz06omILQy-kQPxV9u0Rc8RW4i5GEdT8wSg/formResponse";
 
-// === 3) Create a hidden form + iframe target ===
-var iframeId = "hidden_iframe_for_google_form";
-var iframe = document.getElementById(iframeId);
-if (!iframe) {
-    iframe = document.createElement("iframe");
-    iframe.id = iframeId;
-    iframe.name = iframeId;
-    iframe.style.display = "none";
-    document.body.appendChild(iframe);
+    var iframeId = "hidden_iframe_for_google_form";
+    var iframe = document.getElementById(iframeId);
+    if (!iframe) {
+        iframe = document.createElement("iframe");
+        iframe.id = iframeId;
+        iframe.name = iframeId;
+        iframe.style.display = "none";
+        document.body.appendChild(iframe);
+    }
+
+    var form = document.createElement("form");
+    form.setAttribute("method", "POST");
+    form.setAttribute("action", formUrl);
+    form.setAttribute("target", iframeId);
+
+    function addField(name, value) {
+        var input = document.createElement("input");
+        input.type  = "hidden";
+        input.name  = name;
+        input.value = value;
+        form.appendChild(input);
+    }
+
+    // Use your real entry IDs
+    addField("entry.1165646741", learnerName);   // Learner Name
+    addField("entry.236769250",  learnerEmail);  // Learner Email
+    addField("entry.201120810",  quizScore);     // Score
+    addField("entry.1835766775", level);         // Level
+
+    document.body.appendChild(form);
+    form.submit();
+
+    player.SetVar("SendStatus", "ok");
+} catch (e) {
+    var player = GetPlayer();
+    player.SetVar("SendStatus", "error: " + e.message);
 }
-
-var form = document.createElement("form");
-form.setAttribute("method", "POST");
-form.setAttribute("action", formUrl);
-form.setAttribute("target", iframeId);
-
-// helper to add a hidden input
-function addField(name, value) {
-    var input = document.createElement("input");
-    input.type  = "hidden";
-    input.name  = name;
-    input.value = value;
-    form.appendChild(input);
-}
-
-// === 4) Map Storyline values to your Google Form entry IDs ===
-// !! Replace these with your real entry IDs from the form !!
-addField("entry.1165646741", learnerName);   // Learner Name
-addField("entry.236769250", learnerEmail);  // Learner Email
-addField("entry.201120810", quizScore);     // Score
-addField("entry.1835766775", level);         // Level
-
-// === 5) Submit the form ===
-document.body.appendChild(form);
-form.submit();
 
 }
 
