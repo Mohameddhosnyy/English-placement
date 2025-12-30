@@ -132,6 +132,46 @@ if (!window.quizTimer) {
 
 window.Script4 = function()
 {
+  var player = GetPlayer();
+
+var name   = player.GetVar("LearnerName")  || "";
+var email  = player.GetVar("LearnerEmail") || "";
+var score  = player.GetVar("QuizScore")    || "";
+var level  = player.GetVar("Level")        || "";
+
+// where the results will be received
+var teacherEmail = "mohamed.abdelmaaboud@grifolsegyptplasma.com";
+
+// build subject
+var subject = "Quiz result for " + name;
+
+// build body (with line breaks %0D%0A)
+var body =
+  "Learner name: "  + name  + "%0D%0A" +
+  "Learner email: " + email + "%0D%0A" +
+  "Score: "         + score + "%0D%0A" +
+  "Level: "         + level + "%0D%0A";
+
+// encode subject
+subject = encodeURIComponent(subject);
+
+// IMPORTANT: encode body too
+body = encodeURIComponent(
+  "Learner name: "  + name  + "\r\n" +
+  "Learner email: " + email + "\r\n" +
+  "Score: "         + score + "\r\n" +
+  "Level: "         + level + "\r\n"
+);
+
+// open the email client
+var mailtoLink = "mailto:" + teacherEmail + "?subject=" + subject + "&body=" + body;
+
+window.location.href = mailtoLink;
+
+}
+
+window.Script5 = function()
+{
   try {
     var player = GetPlayer();
     var learnerName  = player.GetVar("LearnerName");

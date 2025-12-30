@@ -14,7 +14,7 @@
         <options>
           <option name="title_enabled" value="true">
             <options>
-              <option name="title_text" value="PT" />
+              <option name="title_text" value="PT (Power automate)" />
             </options>
           </option>
           <option name="logo_enabled" value="false">
